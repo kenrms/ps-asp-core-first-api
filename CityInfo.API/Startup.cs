@@ -12,7 +12,7 @@ namespace CityInfo.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
-                .AddMvcOptions(o => o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()));
+                .AddMvcOptions(o => o.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()));    // consumer can request XML response also
             //.AddJsonOptions(o =>
             //{
             //    if (o.SerializerSettings.ContractResolver != null)
