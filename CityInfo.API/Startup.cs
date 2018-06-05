@@ -52,7 +52,6 @@ namespace CityInfo.API
             loggerFactory.AddConsole();
             loggerFactory.AddDebug();
 
-            //loggerFactory.AddProvider(new NLogLoggerProvider());
             loggerFactory.AddNLog();
 
             if (env.IsDevelopment())
