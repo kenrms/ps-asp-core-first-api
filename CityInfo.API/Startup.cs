@@ -1,5 +1,6 @@
 ﻿using CityInfo.API.Entities;
 using CityInfo.API.Services;
+using CityInfo.API.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -42,8 +43,10 @@ namespace CityInfo.API
             services.AddTransient<IMailService, CloudMailService>();
 #endif
 
-            var connectionString = Startup.Configuration["connectionStrings:cityInfoDBConnectionString"];
+            var connectionString = Configuration["connectionStrings:cityInfoDBConnectionString"];
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
+
+            services.AddScoped<ICityInfoRepository, CityInfoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +69,17 @@ namespace CityInfo.API
             cityInfoContext.EnsureSeedDataForContext();
 
             app.UseStatusCodePages();
+
+            // note: This doesn't seem to be necessary with AutoMapper 7.x+ (course uses 5.x). Works w/o configuring.
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<City, CityWithoutPointsOfInterestDto>();
+                cfg.CreateMap<City, CityDto>();
+                cfg.CreateMap<PointOfInterest, PointOfInterestDto>();
+                cfg.CreateMap<PointOfInterestForCreationDto, PointOfInterest>();
+                cfg.CreateMap<PointOfInterestForUpdateDto, PointOfInterest>();
+                cfg.CreateMap<PointOfInterest, PointOfInterestForUpdateDto>();
+            });
 
             app.UseMvc();
 
